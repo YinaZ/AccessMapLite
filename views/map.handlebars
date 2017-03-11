@@ -1,0 +1,140 @@
+    {{#section 'head'}}
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.31.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.31.0/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+    </style>
+    {{/section}}
+
+<style>
+#origin_marker {
+    width: 10px;
+    height: 10px;
+    background: red;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+#destination_marker {
+    width: 10px;
+    height: 10px;
+    background: blue;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+</style>
+<div id='map'></div>
+<script>
+var origin
+var destination
+var contextPopup
+mapboxgl.accessToken = 'pk.eyJ1IjoieWluYXpodSIsImEiOiJjaXljbDM5ZjMwMTlvMnBwOTk5MnJtZzcyIn0.qy8pHJnT4fYeu1zGkYEclA';
+var map = new mapboxgl.Map({
+    container: 'map', // container id
+    style: 'mapbox://styles/mapbox/streets-v9', //stylesheet location
+    // center: [0, 0],
+    center: [-122.311981244013,47.6606906634709], // starting position
+    zoom: 15 // starting zoom
+});
+map.once('load', function load() {
+    map.addSource('route', {
+        type: 'geojson',
+        data: {
+            "type": "FeatureCollection",
+       	    "features": []
+        }
+    });
+    map.addLayer({
+        "id": "route",
+	"type": "line",
+	"source": "route",
+        "layout": {
+            "line-join": "round",
+            "line-cap": "round"
+        },
+        "paint": {
+            "line-color": "#888",
+            "line-width": 8
+        }
+    });
+});
+var el_origin = document.createElement('div');
+el_origin.id = 'origin_marker';
+var origin_marker = new mapboxgl.Marker(el_origin)
+  .setLngLat([0, 0])
+  .addTo(map);
+var el_destination = document.createElement('div');
+el_destination.id = 'destination_marker';
+var destination_marker = new mapboxgl.Marker(el_destination)
+  .setLngLat([0, 0])
+  .addTo(map);
+map.on('contextmenu', function (e) {
+    // console.log(e.lngLat);
+      let html = `
+      <div id="contextmenu">
+      <ul style="list-style-type: none; padding-left: 0;">
+      <li id="origin">
+        <a>Set Origin</a>
+      </li>
+      <li id="destination">
+        <a>Set Destination</a>
+      </li>
+      </ul>
+      </div>
+      `;
+      contextPopup = new mapboxgl.Popup();
+      contextPopup.setLngLat(e.lngLat)
+        .setHTML(html)
+        .addTo(map);
+      // Set up listeners for click events
+      let originEl = document.getElementById('origin');
+      let destinationEl = document.getElementById('destination');
+
+      originEl.addEventListener('click', () => {
+        origin = {"type":"Point","coordinates":[e.lngLat.lng, e.lngLat.lat]};
+	origin_marker.setLngLat([e.lngLat.lng, e.lngLat.lat]);
+        if (origin && destination) {
+          getRoute(origin, destination);
+        }
+        contextPopup.remove();
+      });
+      destinationEl.addEventListener('click', () => {
+        destination = {"type":"Point","coordinates":[e.lngLat.lng, e.lngLat.lat]};
+	destination_marker.setLngLat([e.lngLat.lng, e.lngLat.lat]);
+        if (origin && destination) {
+          getRoute(origin, destination);
+        }
+        contextPopup.remove();
+      });
+});
+
+function getRoute(source_geom, target_geom) {
+var xhr = new XMLHttpRequest();
+xhr.open('POST', '/getRoute/', true)
+xhr.addEventListener('load', function (e) {
+    var xhr = e.target;
+    if (xhr.status == 200) {
+      var features = JSON.parse(xhr.response);
+      console.log(features);
+      for (i = 0; i < features.length; i++) {
+          features[i] = {
+	      "type": "Feature",
+	      "properties": {},
+	      "geometry": JSON.parse(features[i])
+	  }
+      }
+      map.getSource('route').setData({
+          "type": "FeatureCollection",
+          "features": features
+      });
+    }
+});
+xhr.setRequestHeader("Content-Type", "application/json");
+var body = JSON.stringify({"source": JSON.stringify(source_geom),
+                           "target": JSON.stringify(target_geom)})
+console.log(body)
+xhr.send(body)
+}
+</script>
