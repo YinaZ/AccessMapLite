@@ -1,6 +1,11 @@
 # AccessMapLite
 This is a simplized version of AccessMap that only uses slope information for routing.
+# What to do next
+There are still issues in [GitHub Issues](https://github.com/YinaZ/AccessMapLite/issues) that need to be solved. 
 
+Besides the existing issues, there are also two main tasks to do in the future. 
+1) Smooth the elevation data. Currently the elevation data is calculated with (elevations of start point - elevation of end point) / edge length), which is not optimal because the elevation of a certain point can be extremely high if there is a building at that point. 
+2) Integration (such as integrating current front end code with AccessMap front end code, so that the code can be more reusable)
 # Tutorial
 This tutorial is based on Mac OS X so the installation process might be different if you are using another platform.
 ## Part 1: Setup the Database
