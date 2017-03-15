@@ -1,15 +1,18 @@
 var express = require('express');
+var app = express();
 
 var exphbs = require('express-handlebars');
-var app = express();
 var path = require('path');
+
 var bodyParser = require('body-parser');
-
-var Sequelize = require('sequelize');
-var sequelize = new Sequelize('postgres://postgres@localhost:5432/osm');
-
 app.use(bodyParser.json());
 
+var Sequelize = require('sequelize');
+// new Sequelize query the osm database at port 5432 
+// with username postgress and no password
+var sequelize = new Sequelize('postgres://postgres@localhost:5432/osm');
+
+// use handlebars to display views
 app.set('views', path.join(__dirname, 'views'));
 app.engine('handlebars', exphbs({
   defaultLayout: 'main',
@@ -22,11 +25,16 @@ app.engine('handlebars', exphbs({
   },
 }));
 app.set('view engine', 'handlebars');
+// main page
 app.get('/', function(req, res) {
   res.render('map');
 });
 
+// get two GeoJSON coordinates as string from request body
+// query the database, do the routing and return a route as GeoJSON
 app.post('/getRoute', function(req, res) {
+  // query content, currently a long string
+  // will be nicer if this is stored in a file instead of hard coded
   var query = (
     'CREATE OR REPLACE FUNCTION getRoute(source integer, target integer) ' +
   '  RETURNS TABLE(seq integer, path_seq integer, node bigint, edge bigint, cost double precision, agg_cost double precision) AS $$ ' +
@@ -42,15 +50,17 @@ app.post('/getRoute', function(req, res) {
   sequelize.query(query,
     {replacements: [req.body.source, req.body.target], type: sequelize.QueryTypes.SELECT}).then(function(results) {
     var edges = [];
+    // loop through query result and add to the list
     for (i = 0; i < results.length; i++) {
       console.log(results[i]['geojson']);
       edges.push(results[i]['geojson']);
     }
-
+    // return the list of edges (route)
     res.send(edges);
   });
 });
 
+// running on port 3000
 app.listen(3000, function() {
   console.log('Example app listening on port 3000!');
 });
