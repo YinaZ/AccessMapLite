@@ -3,7 +3,7 @@ This is a simplized version of AccessMap that only uses slope information for ro
 
 # Tutorial
 This tutorial is based on Mac OS X so the installation process might be different if you are using another platform.
-## Setup the Database
+## Part 1: Setup the Database
 This section explains how to download Washington openstreetmap data and create a PostGIS-enabled postgres database with it:
 ### Step 1: Installing PostgreSQL/PostGIS with homebrew
 First make sure your homebrew install is up to date:
@@ -154,8 +154,21 @@ UPDATE routing_info
 ```
 Basically the above block of commands finds the elevation of start and end points of an edge, and divide their difference by the length of the edge, to get the grade, which is the slope of the road. 
 
-### Step 8: Run the app!
-Congratulations on finishing the tutorial! You can now run app.js under AccessMapLite directory:
+Congratulations on setting up the database! Now you can run the app!
+
+## Part 2: Run the app!
+### Step 1: Install dependencies
+Under AccessMapLite directory, install the dependencies:
+```
+npm install
+```
+The above line should help you install all the things you need, but if you get error complaining that something
+is still not there, you can manually install like this:
+```
+npm install <dependency name>
+```
+### Step 2: Run the app!
+ You can now run app.js under AccessMapLite directory:
 ```
 node app.js
 ```
