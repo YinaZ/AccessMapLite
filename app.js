@@ -37,16 +37,30 @@ app.post('/getRoute', function(req, res) {
   // will be nicer if this is stored in a file instead of hard coded
   var query = `
     CREATE OR REPLACE FUNCTION getRoute(source integer, target integer)
-    RETURNS TABLE(seq integer, path_seq integer, node bigint, edge bigint, cost double precision, agg_cost double precision) AS $$
+    RETURNS TABLE(seq integer, path_seq integer, 
+                  node bigint, edge bigint, 
+                  cost double precision, agg_cost double precision) AS $$
       SELECT d.seq, d.path_seq, d.node, d.edge, d.cost, d.agg_cost
-      FROM pgr_dijkstra('SELECT osm_id AS id, source, target,
-    grade + ST_Length(geom) AS cost FROM routing_info WHERE grade IS NOT NULL', $1, $2, false) AS d;
-$$ LANGUAGE sql;
+      FROM pgr_dijkstra('SELECT osm_id AS id, source, target, 
+                                          grade + ST_Length(geom) AS cost 
+                         FROM routing_info 
+                         WHERE grade IS NOT NULL', $1, $2, false) 
+      AS d;
+    $$ LANGUAGE sql;
+
     CREATE OR REPLACE FUNCTION getNearestNode (geom text)
     RETURNS integer AS $$
-      SELECT CAST (id AS integer) FROM routing_info_vertices_pgr ORDER BY the_geom <-> ST_Transform(ST_GeometryFromText(ST_AsText(ST_GeomFromGeoJSON(geom)),4326), 900913) LIMIT 1;
+      SELECT CAST (id AS integer) 
+      FROM routing_info_vertices_pgr 
+      ORDER BY the_geom <-> ST_Transform(ST_GeometryFromText(
+                            ST_AsText(ST_GeomFromGeoJSON(geom)),4326), 900913) 
+      LIMIT 1;
     $$ LANGUAGE sql;
-    SELECT ST_AsGeoJSON(ST_Transform(geom, 4326)) AS geojson FROM routing_info WHERE osm_id IN (SELECT edge FROM getRoute(getNearestNode(?), getNearestNode(?)))
+
+    SELECT ST_AsGeoJSON(ST_Transform(geom, 4326)) 
+    AS geojson FROM routing_info 
+    WHERE osm_id IN (SELECT edge 
+                     FROM getRoute(getNearestNode(?), getNearestNode(?)))
   `;
   sequelize.query(query,
     {replacements: [req.body.source, req.body.target], type: sequelize.QueryTypes.SELECT}).then(function(results) {
