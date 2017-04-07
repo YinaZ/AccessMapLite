@@ -40,20 +40,15 @@ create extension postgis;
 \quit
  ```
  ### Step 3: Install osm2pgsql
-There are several ways to install osm2pgsql that will not affect its integration with others. 
-
-Choice 1:
-I downloaded this installer [here](http://cl.ly/0j0E0N1J3z0z) and installed osm2pgsql, but it will probably be outdated.
+Install with brew as well
+```
+brew install osm2pgsql
+```
 After installation you’ll want to make sure that the osm2pgsql command is available without having to type the full path to where you installed it. If just typing osm2pgsql in a terminal gives the error -bash: osm2pgsql: command not found then you can run these commands in the Terminal:
 ```
 echo 'export PATH="/usr/local/bin:$PATH"' >> ~/.bash_profile
 source ~/.bash_profile
  ```
-Choice 2:
-Install with brew as well
-```
-brew install osm2pgsql
-```
 
  ### Step 4: Load data into your database with osm2pgsql:
 Download the Washington openstreetmap file washington-latest.osm.pbf [here](http://download.geofabrik.de/north-america/us/washington.html)
