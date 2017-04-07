@@ -42,7 +42,7 @@ app.post('/getRoute', function(req, res) {
                   cost double precision, agg_cost double precision) AS $$
       SELECT d.seq, d.path_seq, d.node, d.edge, d.cost, d.agg_cost
       FROM pgr_dijkstra('SELECT osm_id AS id, source, target, 
-                                          grade + ST_Length(geom) AS cost 
+                                          CASE WHEN grade IS NULL THEN 0.0 ELSE abs(grade::double precision) END AS cost 
                          FROM routing_info 
                          WHERE grade IS NOT NULL', $1, $2, false) 
       AS d;
