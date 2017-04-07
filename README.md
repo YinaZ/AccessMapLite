@@ -52,7 +52,8 @@ source ~/.bash_profile
 
  ### Step 4: Load data into your database with osm2pgsql:
 Download the Washington openstreetmap file washington-latest.osm.pbf [here](http://download.geofabrik.de/north-america/us/washington.html)
-2With a pbf file downloaded, you can import it with osm2pgsql. Assuming you downloaded the PBF to your Downloads folder, run the following command in the Terminal:
+
+With a pbf file downloaded, you can import it with osm2pgsql. Assuming you downloaded the PBF to your Downloads folder, run the following command in the Terminal:
  ```
 osm2pgsql -cGs -d osm -S /usr/local/share/osm2pgsql/default.style ~/Downloads/washington-latest.osm.pbf
 ```
