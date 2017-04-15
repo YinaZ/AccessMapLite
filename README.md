@@ -85,12 +85,12 @@ ALTER TABLE routing_info ADD COLUMN target integer;
 ```
 Now let's create topology with pgrouting:
 ```
-select pgr_createTopology('routing_info', 0.000001, 'geom', 'osm_id’);
+select pgr_createTopology('routing_info', 0.000001, 'geom', 'osm_id');
 ```
 The above line should also have created a vertices table: `<edge_table>_vertices_pgr`, so if the table is named `routing info` the vertices table is named `routing_info_vertices_pgr`
 Now check if graph has errors:
 ```
-select pgr_analyzegraph('routing_info', 0.000001, 'geom', 'osm_id’);
+select pgr_analyzegraph('routing_info', 0.000001, 'geom', 'osm_id');
 ```
 If everything went fine, let's try a dijkstra:
 ```
