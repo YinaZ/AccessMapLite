@@ -12,6 +12,11 @@ var Sequelize = require('sequelize');
 // with username postgress and no password
 var sequelize = new Sequelize('postgres://postgres@localhost:5432/osm');
 
+app.use(express.static('public'))
+
+var tiles = require('./routes/tiles');
+app.use('/tiles', tiles);
+
 // use handlebars to display views
 app.set('views', path.join(__dirname, 'views'));
 app.engine('handlebars', exphbs({
@@ -26,8 +31,12 @@ app.engine('handlebars', exphbs({
 }));
 app.set('view engine', 'handlebars');
 // main page
-app.get('/', function(req, res) {
+app.get('/map', function(req, res) {
   res.render('map');
+});
+
+app.get('/', function(req, res) {
+  res.render('index');
 });
 
 // get two GeoJSON coordinates as string from request body
