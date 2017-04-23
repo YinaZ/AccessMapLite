@@ -1,3 +1,7 @@
+import mapboxgl from 'mapbox-gl';
+import '!style!css!mapbox-gl/dist/mapbox-gl.css';
+import chroma from 'chroma-js';
+
 function App(mapbox_token) {
   // Zoom point at which map starts by default
   const zoomStart = 15;
@@ -54,3 +58,4 @@ function App(mapbox_token) {
     }, 'bridge-path-bg');
   });
 }
+module.exports = App;
