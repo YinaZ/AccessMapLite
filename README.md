@@ -120,6 +120,12 @@ Now log into osm database and try a query on dem.seattle:
 ```
 SELECT * FROM dem.seattle LIMIT 1;
 ```
+To speed up queries on dem.seattle, create index:
+```
+CREATE INDEX seattle_convexhull_index
+          ON dem.seattle
+       USING gist(ST_ConvexHull(rast));
+```
 ### Step 7: Add elevation data into your table!
 Now log into osm database and do these commands to add elevation data into your table:
 ```
