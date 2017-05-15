@@ -35,6 +35,7 @@ function App(mapbox_token) {
     map.addSource('routing', {
       type: 'vector',
       tiles: [routingUrl],
+      maxZoom: 17,
       attribution: '&copy; AccessMap'
     });
 

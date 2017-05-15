@@ -13,7 +13,10 @@ var Sequelize = require('sequelize');
 var sequelize = new Sequelize('postgres://postgres@localhost:5432/osm');
 
 router.get('/', function(req, res) {
-  res.render('index');
+  res.render('index', {
+    mapbox_token: JSON.stringify(process.env.MAPBOX_TOKEN)
+  });
+
 });
 
 router.get('/map', function(req, res) {
