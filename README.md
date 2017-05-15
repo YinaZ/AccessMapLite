@@ -40,24 +40,20 @@ create extension postgis;
 \quit
  ```
  ### Step 3: Install osm2pgsql
-There are several ways to install osm2pgsql that will not affect its integration with others. 
-
-Choice 1:
-I downloaded this installer [here](http://cl.ly/0j0E0N1J3z0z) and installed osm2pgsql, but it will probably be outdated.
+Install with brew as well
+```
+brew install osm2pgsql
+```
 After installation you’ll want to make sure that the osm2pgsql command is available without having to type the full path to where you installed it. If just typing osm2pgsql in a terminal gives the error -bash: osm2pgsql: command not found then you can run these commands in the Terminal:
 ```
 echo 'export PATH="/usr/local/bin:$PATH"' >> ~/.bash_profile
 source ~/.bash_profile
  ```
-Choice 2:
-Install with brew as well
-```
-brew install osm2pgsql
-```
 
  ### Step 4: Load data into your database with osm2pgsql:
 Download the Washington openstreetmap file washington-latest.osm.pbf [here](http://download.geofabrik.de/north-america/us/washington.html)
-2With a pbf file downloaded, you can import it with osm2pgsql. Assuming you downloaded the PBF to your Downloads folder, run the following command in the Terminal:
+
+With a pbf file downloaded, you can import it with osm2pgsql. Assuming you downloaded the PBF to your Downloads folder, run the following command in the Terminal:
  ```
 osm2pgsql -cGs -d osm -S /usr/local/share/osm2pgsql/default.style ~/Downloads/washington-latest.osm.pbf
 ```
@@ -89,12 +85,12 @@ ALTER TABLE routing_info ADD COLUMN target integer;
 ```
 Now let's create topology with pgrouting:
 ```
-select pgr_createTopology('routing_info', 0.000001, 'geom', 'osm_id’);
+select pgr_createTopology('routing_info', 0.000001, 'geom', 'osm_id');
 ```
 The above line should also have created a vertices table: `<edge_table>_vertices_pgr`, so if the table is named `routing info` the vertices table is named `routing_info_vertices_pgr`
 Now check if graph has errors:
 ```
-select pgr_analyzegraph('routing_info', 0.000001, 'geom', 'osm_id’);
+select pgr_analyzegraph('routing_info', 0.000001, 'geom', 'osm_id');
 ```
 If everything went fine, let's try a dijkstra:
 ```
@@ -123,6 +119,12 @@ Notes:
 Now log into osm database and try a query on dem.seattle:
 ```
 SELECT * FROM dem.seattle LIMIT 1;
+```
+To speed up queries on dem.seattle, create index:
+```
+CREATE INDEX seattle_convexhull_index
+          ON dem.seattle
+       USING gist(ST_ConvexHull(rast));
 ```
 ### Step 7: Add elevation data into your table!
 Now log into osm database and do these commands to add elevation data into your table:
