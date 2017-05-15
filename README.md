@@ -180,6 +180,61 @@ npm install <dependency name>
 node app.js
 ```
 Open your browser and check out `http://localhost:3000/`
+## Part 3: Run the webpack-integration branch
+ webpack-integration branch currently can load tiles from routing_info table and display on the map. Routing function is not added yet.
+ ### Step 1: Install dependencies
+Under AccessMapLite directory, install the dependencies:
+```
+npm install
+```
+The above line should help you install all the things you need, but if you get error complaining that something
+is still not there, you can manually install like this:
+```
+npm install <dependency name>
+```
+ ### Step 2: Get accessmap-vt
+ We need accessmap-vt to provide vector tiles for AccessMapLite. I forked accessmap-vt [here](https://github.com/YinaZ/accessmap-vt) and changed the code to work for AccessMapLite. 
+ To get accessmap-vt, please do
+ ```
+ git clone git@github.com:YinaZ/accessmap-vt.git
+ ```
+ Make sure you are using the correct node version:
+ ```
+ nvm use
+ ```
+ Then do `npm install` or `yarn` to install all the dependencies. (When I tried`npm install` and run the app, it throws error and complains about the version of certain dependencies, so I did `yarn` instead and everything worked fine. If you ended up having such errors please definitely try installing yarn.
+ ### Step 3: Install Docker
+ accessmap-vt needs Docker installed.
+ 
+ Download Docker[here](https://docs.docker.com/engine/installation/) and install it.
+ ### Step 4: Source set_envs.sh
+ You need to source set_envs.sh in both AccessMapLite and accessmap-vt.
+ In both directories you can find set_envs.sh.example, copy set_envs.sh.example, rename to set_envs.sh and modify it according to your database:
+ ```
+ cp set_envs.sh.example set_envs.sh
+ ```
+ Edit set_envs.sh to be something similar to this:
+ ```
+ export DATABASE_URL=postgresql://postgres:@localhost:5432/osm
+ ```
+ And in both directories do
+ ```
+ source set_envs.sh
+ ```
+ ### Step 5: Run accessmap-vt
+ Run the app under accessmap-vt directory:
+ ```
+ npm run app
+ ```
+ Wait for several minutes till the console output says `routing tiles built...`
+ 
+ ### Step 6: Run AccessMapLite
+ Now run the app under AccessMapLite directory:
+ ```
+ npm run app
+ ```
+ Open your browser and check out `http://localhost:3000/`
+ 
 ## References
 [Tutorial: creating postgres database with osm data](https://tilemill-project.github.io/tilemill/docs/guides/osm-bright-mac-quickstart/)
 
