@@ -4,6 +4,7 @@ var express = require('express'),
 
 var index = require('./routes/index');
 var tiles = require('./routes/tiles');
+var api = require('./routes/api');
 
 var app = express();
 var env = process.env.NODE_ENV || 'development';
@@ -13,6 +14,7 @@ app.use(express.static('public'))
 
 app.use('/', index);
 app.use('/tiles', tiles);
+app.use('/api', api);
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
