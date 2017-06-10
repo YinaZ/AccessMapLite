@@ -1,0 +1,4 @@
+export NODE_ENV=development
+export MAPBOX_TOKEN=
+export API_URL=
+export TILES_URL=

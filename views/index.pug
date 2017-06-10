@@ -1,0 +1,14 @@
+extends layout
+append head
+  style.
+    html, body, #map {
+        height: 100%;
+        width: 100%;
+    }
+
+append content
+  #route-control
+  #map
+  script(src='build/map-bundle.js')
+  script.
+    App(!{mapbox_token});
