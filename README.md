@@ -163,16 +163,23 @@ npm install <dependency name>
  ### Step 3: Install Docker
  accessmap-vt needs Docker installed.
  
- Download Docker[here](https://docs.docker.com/engine/installation/) and install it.
+ Download Docker [here](https://docs.docker.com/engine/installation/) and install it.
  ### Step 4: Source set_envs.sh
  You need to source set_envs.sh in both AccessMapLite and accessmap-vt.
  In both directories you can find set_envs.sh.example, copy set_envs.sh.example, rename to set_envs.sh and modify it according to your database:
  ```
  cp set_envs.sh.example set_envs.sh
  ```
- Edit set_envs.sh to be something similar to this:
+ For `accessmap-vt/set_envs.sh`, edit set_envs.sh to be something similar to this:
  ```
  export DATABASE_URL=postgresql://postgres:@localhost:5432/osm
+ ```
+ For `AccessMapLite/set_envs.sh`, you need to get a mapbox token as well, and your set_envs.sh should look like:
+ ```
+ export NODE_ENV=development
+ export MAPBOX_TOKEN=[your mapbox token]
+ export API_URL=localhost:5000
+ export TILES_URL=localhost:3001
  ```
  And in both directories do
  ```
