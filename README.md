@@ -69,34 +69,15 @@ NOTE: In this tutorial I am using the installer (Choice 1 in last step) so if de
  ```
 SELECT * FROM planet_osm_ways LIMIT 2;
 ```
-### Step 5: Install pgRouting, create your own routing info table and actually do a routing!
-First install pgRouting with brew:
-```
-brew install pgrouting
-```
+### Step 5: Create your own routing info table
 Here let's create a table that contains information needed for routing with pgRouting:
 
 Use `psql osm` to log into your osm database, and then use these commands to create the pgrouting extension and then create a table named routing_info
 ```
 CREATE EXTENSION pgrouting;
 CREATE TABLE routing_info AS SELECT way AS geom, osm_id FROM planet_osm_roads;
-ALTER TABLE routing_info ADD COLUMN source integer;
-ALTER TABLE routing_info ADD COLUMN target integer;
 ```
-Now let's create topology with pgrouting:
-```
-select pgr_createTopology('routing_info', 0.000001, 'geom', 'osm_id');
-```
-The above line should also have created a vertices table: `<edge_table>_vertices_pgr`, so if the table is named `routing info` the vertices table is named `routing_info_vertices_pgr`
-Now check if graph has errors:
-```
-select pgr_analyzegraph('routing_info', 0.000001, 'geom', 'osm_id');
-```
-If everything went fine, let's try a dijkstra:
-```
-select pgr_dijkstra('SELECT osm_id AS id, source, target, ST_Length(geom) AS cost FROM routing_info', 31, 9);
-```
-Notice that currently the dijkstra is routing based on distance instead of elevation and we want to eventually use elevation as weights
+
 ### Step 6: Load elevation data into database
 Good job on coming so far! Now let's load the elevation data into the database as well!
 
@@ -161,28 +142,10 @@ UPDATE routing_info
 ```
 Basically the above block of commands finds the elevation of start and end points of an edge, and divide their difference by the length of the edge, to get the grade, which is the slope of the road. 
 
-Congratulations on setting up the database! Now you can run the app!
+Congratulations on setting up the database! 
 
-## Part 2: Run the app!
+## Part 2: Set up AccessMapLite
 ### Step 1: Install dependencies
-Under AccessMapLite directory, install the dependencies:
-```
-npm install
-```
-The above line should help you install all the things you need, but if you get error complaining that something
-is still not there, you can manually install like this:
-```
-npm install <dependency name>
-```
-### Step 2: Run the app!
- You can now run app.js under AccessMapLite directory:
-```
-node app.js
-```
-Open your browser and check out `http://localhost:3000/`
-## Part 3: Run the webpack-integration branch
- webpack-integration branch currently can load tiles from routing_info table and display on the map. Routing function is not added yet.
- ### Step 1: Install dependencies
 Under AccessMapLite directory, install the dependencies:
 ```
 npm install
@@ -228,7 +191,10 @@ npm install <dependency name>
  ```
  Wait for several minutes till the console output says `routing tiles built...`
  
- ### Step 6: Run AccessMapLite
+ ### Step 6: Get and set up OSRM
+ Follow the tutorial [here](https://github.com/YinaZ/osrm-setup) to get OSRM backend running on port 5000
+ 
+ ### Step 7: Run AccessMapLite
  Now run the app under AccessMapLite directory:
  ```
  npm run app
