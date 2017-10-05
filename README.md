@@ -64,11 +64,10 @@ NOTE: In this tutorial I am using the installer (Choice 1 in last step) so if de
 SELECT * FROM planet_osm_ways LIMIT 2;
 ```
 ### Step 5: Create your own routing info table
-Here let's create a table that contains information needed for routing with pgRouting:
+Here let's create a table `routing_info`:
 
 Use `psql osm` to log into your osm database, and then use these commands to create the pgrouting extension and then create a table named routing_info
 ```
-CREATE EXTENSION pgrouting;
 CREATE TABLE routing_info AS SELECT way AS geom, osm_id FROM planet_osm_roads;
 ```
 
@@ -79,7 +78,7 @@ Good job on coming so far! Now let's load the elevation data into the database a
 
 Import using rast2pgsql, which should have been installed along with PostGIS (make sure it's both installed and enabled on your specific database)
 
- 2) Under the directory that contains w001001.adf, turn it into SQL file: raster2pgsql -d -t 64x64 w001001.adf dem.seattle > "n48w123.seattle.sql"
+ 2) Under the directory that contains w001001.adf, turn it into SQL file: `raster2pgsql -d -t 64x64 w001001.adf dem.seattle > n48w123.seattle.sql`
  
  3) Run the SQL on the database: 
 ```
