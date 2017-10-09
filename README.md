@@ -66,7 +66,7 @@ SELECT * FROM planet_osm_ways LIMIT 2;
 ### Step 5: Create your own routing info table
 Here let's create a table `routing_info`:
 
-Use `psql osm` to log into your osm database, and then use these commands to create the pgrouting extension and then create a table named routing_info
+Use `psql osm` to log into your osm database, and then use these commands to create a table named routing_info
 ```
 CREATE TABLE routing_info AS SELECT way AS geom, osm_id FROM planet_osm_roads;
 ```
@@ -195,9 +195,9 @@ npm install <dependency name>
  Follow the tutorial [here](https://github.com/YinaZ/osrm-setup) to get OSRM backend running on port 5000
  
  ### Step 7: Run AccessMapLite
- Now run the app under AccessMapLite directory:
+ Now build & run the app under AccessMapLite directory:
  ```
- npm run app
+ npm run dev
  ```
  Open your browser and check out `http://localhost:3000/`
  
