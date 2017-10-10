@@ -68,7 +68,7 @@ Here let's create a table `routing_info`:
 
 Use `psql osm` to log into your osm database, and then use these commands to create a table named routing_info
 ```
-CREATE TABLE routing_info AS SELECT way AS geom, osm_id FROM planet_osm_roads;
+CREATE TABLE routing_info AS SELECT ST_Transform(way, 900913) AS geom, osm_id FROM planet_osm_line;
 ```
 
 ### Step 6: Load elevation data into database
@@ -163,7 +163,16 @@ npm install <dependency name>
  accessmap-vt needs Docker installed.
  
  Download Docker [here](https://docs.docker.com/engine/installation/) and install it.
- ### Step 4: Source set_envs.sh
+ ### Step 4: Install tippecanoe
+ a. `accessmap-vt` defaults to using docker to run tippecanoe, expecting an
+image tagged as `tippecanoe`. To create this image, run
+`docker build -t tippecanoe tippecanoe-docker` in the cloned `accessmap-vt`
+directory.
+
+b. Install manually following the instructions at the
+[tippecanoe](https://github.com/mapbox/tippecanoe) repository. For mac you can use `brew install tippecanoe`
+
+ ### Step 5: Source set_envs.sh
  You need to source set_envs.sh in both AccessMapLite and accessmap-vt.
  In both directories you can find set_envs.sh.example, copy set_envs.sh.example, rename to set_envs.sh and modify it according to your database:
  ```
@@ -184,17 +193,17 @@ npm install <dependency name>
  ```
  source set_envs.sh
  ```
- ### Step 5: Run accessmap-vt
+ ### Step 6: Run accessmap-vt
  Run the app under accessmap-vt directory:
  ```
  npm run app
  ```
  Wait for several minutes till the console output says `routing tiles built...`
  
- ### Step 6: Get and set up OSRM
+ ### Step 7: Get and set up OSRM
  Follow the tutorial [here](https://github.com/YinaZ/osrm-setup) to get OSRM backend running on port 5000
  
- ### Step 7: Run AccessMapLite
+ ### Step 8: Run AccessMapLite
  Now build & run the app under AccessMapLite directory:
  ```
  npm run dev
